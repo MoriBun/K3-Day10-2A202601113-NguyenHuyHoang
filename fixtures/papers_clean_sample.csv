@@ -1,0 +1,43 @@
+paper_id,title,summary,authors_joined,categories_joined,primary_category,published,updated,abs_url,pdf_url,text_for_embedding,age_days,summary_chars
+10.5555/fixture.2026.0001,Agentic Retrieval Augmented Generation for Scholarly Question Answering,We introduce an agentic retrieval augmented generation framework that lets a language model decide when to call a semantic search tool and when to answer directly. On a corpus of scholarly abstracts the agent improves answer accuracy over a single-shot retrieval baseline while issuing fewer retrieval calls.,Tran Minh Khoa; Le Thi Hong; Pham Quoc Bao,Computer Science; Information Retrieval,Computer Science,2026-07-22,2026-07-22,https://doi.org/10.5555/fixture.2026.0001,,"Agentic Retrieval Augmented Generation for Scholarly Question Answering
+
+We introduce an agentic retrieval augmented generation framework that lets a language model decide when to call a semantic search tool and when to answer directly. On a corpus of scholarly abstracts the agent improves answer accuracy over a single-shot retrieval baseline while issuing fewer retrieval calls.
+
+Authors: Tran Minh Khoa; Le Thi Hong; Pham Quoc Bao
+Categories: Computer Science; Information Retrieval
+Published: 2026-07-22",15,308
+10.5555/fixture.2026.0002,Measuring Data Quality Drift in Retrieval Pipelines,"Retrieval pipelines degrade silently when upstream data quality drifts. This work defines a set of observable signals over row counts, null rates, duplicate rates and record freshness, then correlates each signal with downstream retrieval hit rate on a fixed evaluation set.",Nguyen Van An; Do Thi Mai,Data Engineering; Machine Learning,Data Engineering,2026-06-30,2026-06-30,https://doi.org/10.5555/fixture.2026.0002,,"Measuring Data Quality Drift in Retrieval Pipelines
+
+Retrieval pipelines degrade silently when upstream data quality drifts. This work defines a set of observable signals over row counts, null rates, duplicate rates and record freshness, then correlates each signal with downstream retrieval hit rate on a fixed evaluation set.
+
+Authors: Nguyen Van An; Do Thi Mai
+Categories: Data Engineering; Machine Learning
+Published: 2026-06-30",37,274
+10.5555/fixture.2026.0003,Embedding Staleness and Its Effect on Large Language Model Grounding,"Vector stores are rebuilt far less often than the source corpus changes. We quantify how stale embeddings affect grounding quality for large language models, showing that recall on recently published documents degrades faster than overall recall and is therefore invisible to aggregate metrics.",Hoang Gia Bao; Vu Thi Lan; Dang Hai Nam; Bui Anh Tuan,Natural Language Processing; Information Retrieval,Natural Language Processing,2026-05-14,2026-05-14,https://doi.org/10.5555/fixture.2026.0003,,"Embedding Staleness and Its Effect on Large Language Model Grounding
+
+Vector stores are rebuilt far less often than the source corpus changes. We quantify how stale embeddings affect grounding quality for large language models, showing that recall on recently published documents degrades faster than overall recall and is therefore invisible to aggregate metrics.
+
+Authors: Hoang Gia Bao; Vu Thi Lan; Dang Hai Nam; Bui Anh Tuan
+Categories: Natural Language Processing; Information Retrieval
+Published: 2026-05-14",84,294
+10.5555/fixture.2026.0004,A Controlled Corruption Benchmark for Retrieval Augmented Systems,"We propose a benchmark that injects controlled corruption into a clean corpus: dropped recent records, blanked abstracts, injected noise, truncated titles, backdated timestamps and duplicated rows. Each corruption is logged with the affected identifiers so that downstream metric changes remain attributable.",Ngo Thanh Son; Truong Thi Ha,Machine Learning; Software Engineering,Machine Learning,2026-04-02,2026-04-02,https://doi.org/10.5555/fixture.2026.0004,,"A Controlled Corruption Benchmark for Retrieval Augmented Systems
+
+We propose a benchmark that injects controlled corruption into a clean corpus: dropped recent records, blanked abstracts, injected noise, truncated titles, backdated timestamps and duplicated rows. Each corruption is logged with the affected identifiers so that downstream metric changes remain attributable.
+
+Authors: Ngo Thanh Son; Truong Thi Ha
+Categories: Machine Learning; Software Engineering
+Published: 2026-04-02",126,308
+10.5555/fixture.2026.0005,Repairing Corrupted Corpora from Immutable Raw Snapshots,"Recovery is only possible when the raw ingestion snapshot is preserved before any transformation. We describe a repair procedure that replays cleaning from the raw snapshot rather than patching derived artifacts, and we show that stable document identifiers are the precondition for a fair before and after comparison.",Phan Duc Long; Ly Thi Thu; Cao Minh Hieu,Data Engineering; Reproducibility,Data Engineering,2026-03-11,2026-03-11,https://doi.org/10.5555/fixture.2026.0005,,"Repairing Corrupted Corpora from Immutable Raw Snapshots
+
+Recovery is only possible when the raw ingestion snapshot is preserved before any transformation. We describe a repair procedure that replays cleaning from the raw snapshot rather than patching derived artifacts, and we show that stable document identifiers are the precondition for a fair before and after comparison.
+
+Authors: Phan Duc Long; Ly Thi Thu; Cao Minh Hieu
+Categories: Data Engineering; Reproducibility
+Published: 2026-03-11",148,318
+10.5555/fixture.2026.0006,Judge Models Versus Token Overlap for Evaluating Grounded Answers,"Token overlap metrics reward surface similarity and penalise correct paraphrases. We compare token level F1 against a structured language model judge on grounded question answering, and report where the two disagree most, namely on answers that are factually correct but lexically distant from the reference.",Dinh Thi Ngoc; Ha Van Thang,Natural Language Processing; Evaluation,Natural Language Processing,2026-02-19,2026-02-19,https://doi.org/10.5555/fixture.2026.0006,,"Judge Models Versus Token Overlap for Evaluating Grounded Answers
+
+Token overlap metrics reward surface similarity and penalise correct paraphrases. We compare token level F1 against a structured language model judge on grounded question answering, and report where the two disagree most, namely on answers that are factually correct but lexically distant from the reference.
+
+Authors: Dinh Thi Ngoc; Ha Van Thang
+Categories: Natural Language Processing; Evaluation
+Published: 2026-02-19",168,308
