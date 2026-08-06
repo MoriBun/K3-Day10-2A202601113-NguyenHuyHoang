@@ -45,21 +45,25 @@ class LocalEmbeddingIndex:
         records = df.to_dict(orient="records")
         documents: list[dict[str, Any]] = []
         for index, row in enumerate(records):
+            def metadata_value(field: str) -> str:
+                value = row[field]
+                return "" if pd.isna(value) else str(value)
+
             documents.append(
                 {
-                    "record_id": f"{row['paper_id']}::{index}",
-                    "paper_id": row["paper_id"],
-                    "title": row["title"],
-                    "content": row["text_for_embedding"],
+                    "record_id": f"{metadata_value('paper_id')}::{index}",
+                    "paper_id": metadata_value("paper_id"),
+                    "title": metadata_value("title"),
+                    "content": metadata_value("text_for_embedding"),
                     "metadata": {
-                        "paper_id": row["paper_id"],
-                        "title": row["title"],
-                        "published": row["published"],
-                        "authors_joined": row["authors_joined"],
-                        "categories_joined": row["categories_joined"],
-                        "summary": row["summary"],
-                        "abs_url": row["abs_url"],
-                        "pdf_url": row["pdf_url"],
+                        "paper_id": metadata_value("paper_id"),
+                        "title": metadata_value("title"),
+                        "published": metadata_value("published"),
+                        "authors_joined": metadata_value("authors_joined"),
+                        "categories_joined": metadata_value("categories_joined"),
+                        "summary": metadata_value("summary"),
+                        "abs_url": metadata_value("abs_url"),
+                        "pdf_url": metadata_value("pdf_url"),
                     },
                 }
             )
