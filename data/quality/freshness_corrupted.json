@@ -1,11 +1,20 @@
 {
-  "generated_at": "2026-08-06T05:44:46.040621+00:00",
+  "generated_at": "2026-08-06T08:48:08.123843+00:00",
   "threshold_days": 180,
-  "latest_published": "2026-07-13",
-  "oldest_published": "2025-06-21",
+  "total_rows": 24,
   "stale_rows": 3,
   "invalid_age_rows": 0,
   "undated_rows": 0,
-  "total_rows": 24,
-  "is_fresh": false
+  "fresh_rows": 21,
+  "is_fresh": false,
+  "latest_published": "2026-07-13",
+  "oldest_published": "2025-06-21",
+  "min_age_days": 24,
+  "max_age_days": 411,
+  "mean_age_days": 121,
+  "stale_paper_ids": [
+    "10.54254/2753-8818/2026.dl34055",
+    "10.70121/001c.158711",
+    "10.54254/2753-8818/2026.dl34055"
+  ]
 }

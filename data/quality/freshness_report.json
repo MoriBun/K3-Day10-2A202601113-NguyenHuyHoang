@@ -1,11 +1,16 @@
 {
-  "generated_at": "2026-08-06T05:42:34.353923+00:00",
+  "generated_at": "2026-08-06T08:45:26.433166+00:00",
   "threshold_days": 180,
-  "latest_published": "2026-08-01",
-  "oldest_published": "2026-02-12",
+  "total_rows": 24,
   "stale_rows": 0,
   "invalid_age_rows": 0,
   "undated_rows": 0,
-  "total_rows": 24,
-  "is_fresh": true
+  "fresh_rows": 24,
+  "is_fresh": true,
+  "latest_published": "2026-08-01",
+  "oldest_published": "2026-02-12",
+  "min_age_days": 5,
+  "max_age_days": 175,
+  "mean_age_days": 81,
+  "stale_paper_ids": []
 }

@@ -1,0 +1,80 @@
+{
+  "report_name": "corrupted",
+  "generated_at": "2026-08-06T08:48:08.115861+00:00",
+  "total_rows": 24,
+  "checks_total": 7,
+  "checks_passed": 3,
+  "checks_failed": 4,
+  "success": false,
+  "checks": [
+    {
+      "name": "row_count_min",
+      "success": true,
+      "expected": ">= 20 rows",
+      "observed": "24 rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "paper_id_not_null",
+      "success": true,
+      "expected": "`paper_id` is not blank",
+      "observed": "0 blank rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "paper_id_unique",
+      "success": false,
+      "expected": "each paper_id occurs once",
+      "observed": "2 duplicate rows",
+      "failed_rows": 2,
+      "sample_failed_paper_ids": [
+        "10.54254/2753-8818/2026.dl34055",
+        "10.54254/2753-8818/2026.dl34055"
+      ]
+    },
+    {
+      "name": "title_not_null",
+      "success": true,
+      "expected": "`title` is not blank",
+      "observed": "0 blank rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "summary_min_length",
+      "success": false,
+      "expected": "summary >= 100 chars",
+      "observed": "2 short rows",
+      "failed_rows": 2,
+      "sample_failed_paper_ids": [
+        "10.21203/rs.3.rs-10178277/v1",
+        "10.70121/001c.158711"
+      ]
+    },
+    {
+      "name": "no_duplicate_rows",
+      "success": false,
+      "expected": "no duplicate complete rows",
+      "observed": "2 duplicate rows",
+      "failed_rows": 2,
+      "sample_failed_paper_ids": [
+        "10.54254/2753-8818/2026.dl34055",
+        "10.54254/2753-8818/2026.dl34055"
+      ]
+    },
+    {
+      "name": "freshness_age",
+      "success": false,
+      "expected": "0 <= age_days <= 180",
+      "observed": "3 invalid or stale rows",
+      "failed_rows": 3,
+      "sample_failed_paper_ids": [
+        "10.54254/2753-8818/2026.dl34055",
+        "10.70121/001c.158711",
+        "10.54254/2753-8818/2026.dl34055"
+      ]
+    }
+  ]
+}

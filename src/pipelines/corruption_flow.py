@@ -1,11 +1,15 @@
+"""Evaluate corrupted data, repair from raw, and compare all states."""
+
 from __future__ import annotations
+
+from datetime import UTC, datetime, timedelta
 
 import pandas as pd
 
 from core.config import load_settings
-from core.utils import now_utc, read_json, write_csv, write_json
+from core.utils import read_json
 from evaluation.metrics import evaluate_pipeline
-from ingestion.cleaning import build_clean_dataframe
+from ingestion.cleaning import build_clean_dataframe, write_clean_artifacts
 from ingestion.corruption import corrupt_clean_dataframe
 from ingestion.crossref import load_raw_records
 from observability.quality import build_freshness_report, run_data_quality_checks
@@ -13,82 +17,44 @@ from observability.reporting import generate_corruption_report
 from retrieval.index import LocalEmbeddingIndex
 
 
-def _save_dataframe(df: pd.DataFrame, csv_path, json_path) -> None:
-    write_csv(df, csv_path)
-    write_json(json_path, df.to_dict(orient="records"))
+def _baseline_run_date(df: pd.DataFrame) -> datetime:
+    for _, row in df.iterrows():
+        published = pd.to_datetime(row.get("published"), errors="coerce", utc=True)
+        age_days = pd.to_numeric(row.get("age_days"), errors="coerce")
+        if pd.notna(published) and pd.notna(age_days):
+            return published.to_pydatetime() + timedelta(days=int(age_days))
+    return datetime.now(UTC)
 
 
-def _require_file(path, description: str) -> None:
-    if not path.exists():
-        raise FileNotFoundError(f"Missing {description}: {path}. Run `python script/run_phase1.py` first.")
+def _evaluate(settings, df: pd.DataFrame, state: str, embeddings_path, metrics_path, answers_path):
+    index = LocalEmbeddingIndex.build(df, settings, embeddings_path)
+    evaluation = evaluate_pipeline(settings, index, settings.paths.eval_testset, metrics_path, answers_path)
+    quality = run_data_quality_checks(df, settings, state)
+    freshness = build_freshness_report(df, settings, settings.paths.quality_dir / f"freshness_{state}.json")
+    return evaluation.summary, quality, freshness
+
 
 def main() -> None:
-    """Measure corruption impact, repair from raw data, and publish the comparison."""
     settings = load_settings()
-    _require_file(settings.paths.clean_csv, "baseline clean dataset")
-    _require_file(settings.paths.baseline_metrics, "baseline metrics")
-    _require_file(settings.paths.eval_testset, "baseline evaluation test set")
-    _require_file(settings.paths.raw_records_json, "raw records snapshot")
+    required = (settings.paths.clean_csv, settings.paths.baseline_metrics, settings.paths.eval_testset, settings.paths.raw_records_json)
+    if any(not path.exists() for path in required):
+        raise FileNotFoundError("Missing baseline artifact; run `python script/run_phase1.py` first.")
+
     baseline_metrics = read_json(settings.paths.baseline_metrics)
-    clean_df = pd.read_csv(settings.paths.clean_csv, keep_default_na=False)
+    baseline_df = pd.read_csv(settings.paths.clean_csv)
+    run_date = _baseline_run_date(baseline_df)
+    corrupted_df = corrupt_clean_dataframe(baseline_df, settings.paths.corruption_log)
+    write_clean_artifacts(corrupted_df, settings.paths.corrupted_clean_csv, settings.paths.corrupted_clean_json)
+    corrupted_metrics, corrupted_quality, corrupted_freshness = _evaluate(settings, corrupted_df, "corrupted", settings.paths.corrupted_embeddings_json, settings.paths.corrupted_metrics, settings.paths.corrupted_answers)
 
-    corrupted_df = corrupt_clean_dataframe(clean_df, settings.paths.corruption_log)
-    _save_dataframe(corrupted_df, settings.paths.corrupted_clean_csv, settings.paths.corrupted_clean_json)
-    corrupted_index = LocalEmbeddingIndex.build(
-        corrupted_df,
-        settings=settings,
-        embeddings_output_path=settings.paths.corrupted_embeddings_json,
-    )
-    corrupted_evaluation = evaluate_pipeline(
-        settings=settings,
-        index=corrupted_index,
-        test_set_path=settings.paths.eval_testset,
-        metrics_output_path=settings.paths.corrupted_metrics,
-        answers_output_path=settings.paths.corrupted_answers,
-    )
-    corrupted_quality = run_data_quality_checks(corrupted_df, settings, report_name="corrupted_quality")
-    corrupted_freshness = build_freshness_report(
-        corrupted_df,
-        settings,
-        settings.paths.quality_dir / "freshness_corrupted.json",
-    )
-
-    repaired_records = load_raw_records(settings.paths.raw_records_json)
-    repaired_df = build_clean_dataframe(repaired_records, run_date=now_utc())
+    repaired_df = build_clean_dataframe(load_raw_records(settings.paths.raw_records_json), run_date)
     if repaired_df.empty:
         raise RuntimeError("Repair produced no usable records from the raw snapshot.")
-    _save_dataframe(repaired_df, settings.paths.repaired_clean_csv, settings.paths.repaired_clean_json)
-    repaired_index = LocalEmbeddingIndex.build(
-        repaired_df,
-        settings=settings,
-        embeddings_output_path=settings.paths.repaired_embeddings_json,
-    )
-    repaired_evaluation = evaluate_pipeline(
-        settings=settings,
-        index=repaired_index,
-        test_set_path=settings.paths.eval_testset,
-        metrics_output_path=settings.paths.repaired_metrics,
-        answers_output_path=settings.paths.repaired_answers,
-    )
-    repaired_quality = run_data_quality_checks(repaired_df, settings, report_name="repaired_quality")
-    repaired_freshness = build_freshness_report(
-        repaired_df,
-        settings,
-        settings.paths.quality_dir / "freshness_repaired.json",
-    )
-    generate_corruption_report(
-        settings.paths.comparison_report,
-        baseline_metrics=baseline_metrics,
-        corrupted_metrics=corrupted_evaluation.summary,
-        repaired_metrics=repaired_evaluation.summary,
-        corrupted_quality=corrupted_quality,
-        repaired_quality=repaired_quality,
-        corrupted_freshness=corrupted_freshness,
-        repaired_freshness=repaired_freshness,
-    )
-    print(
-        "Corruption flow complete: "
-        f"hit rate baseline={baseline_metrics.get('retrieval_hit_rate', 0):.3f}, "
-        f"corrupted={corrupted_evaluation.summary['retrieval_hit_rate']:.3f}, "
-        f"repaired={repaired_evaluation.summary['retrieval_hit_rate']:.3f}."
-    )
+    write_clean_artifacts(repaired_df, settings.paths.repaired_clean_csv, settings.paths.repaired_clean_json)
+    repaired_metrics, repaired_quality, repaired_freshness = _evaluate(settings, repaired_df, "repaired", settings.paths.repaired_embeddings_json, settings.paths.repaired_metrics, settings.paths.repaired_answers)
+    generate_corruption_report(settings.paths.comparison_report, baseline_metrics, corrupted_metrics, repaired_metrics, corrupted_quality, repaired_quality, corrupted_freshness, repaired_freshness)
+    print(f"Corruption flow complete: hit rate baseline={baseline_metrics.get('retrieval_hit_rate', 0):.3f}, corrupted={corrupted_metrics['retrieval_hit_rate']:.3f}, repaired={repaired_metrics['retrieval_hit_rate']:.3f}.")
+
+
+if __name__ == "__main__":
+    main()

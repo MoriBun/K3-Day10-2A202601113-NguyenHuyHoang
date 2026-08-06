@@ -1,0 +1,67 @@
+{
+  "report_name": "repaired",
+  "generated_at": "2026-08-06T08:49:37.724698+00:00",
+  "total_rows": 24,
+  "checks_total": 7,
+  "checks_passed": 7,
+  "checks_failed": 0,
+  "success": true,
+  "checks": [
+    {
+      "name": "row_count_min",
+      "success": true,
+      "expected": ">= 20 rows",
+      "observed": "24 rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "paper_id_not_null",
+      "success": true,
+      "expected": "`paper_id` is not blank",
+      "observed": "0 blank rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "paper_id_unique",
+      "success": true,
+      "expected": "each paper_id occurs once",
+      "observed": "0 duplicate rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "title_not_null",
+      "success": true,
+      "expected": "`title` is not blank",
+      "observed": "0 blank rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "summary_min_length",
+      "success": true,
+      "expected": "summary >= 100 chars",
+      "observed": "0 short rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "no_duplicate_rows",
+      "success": true,
+      "expected": "no duplicate complete rows",
+      "observed": "0 duplicate rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "freshness_age",
+      "success": true,
+      "expected": "0 <= age_days <= 180",
+      "observed": "0 invalid or stale rows",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    }
+  ]
+}
