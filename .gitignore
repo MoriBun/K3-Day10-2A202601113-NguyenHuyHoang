@@ -5,3 +5,8 @@ lab.txt
 src/*.egg-info/
 lab/
 **/__pycache__/
+
+# Chroma persistent store: sqlite binary, tai lap duoc bang LocalEmbeddingIndex.build().
+# Manifest data/embeddings/*.json van duoc commit lam bang chung.
+data/chroma/*
+!data/chroma/.gitkeep
