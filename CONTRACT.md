@@ -56,13 +56,34 @@ Bảng đầy đủ 27 artifact: xem `Paths` trong `src/core/config.py:12-40`.
 | `title` | `title[0]` | list; rỗng → **loại record** |
 | `summary` | `abstract` | JATS XML → phải strip tag, xem 2.4 |
 | `authors` | `author[].given` + `.family` | thiếu → dùng `.name` (tổ chức); không có `author` → `[]` |
-| `categories` | `subject[]` | thường vắng → `[]` |
-| `primary_category` | `subject[0]` | không có → `""` |
+| `categories` | `subject[]`, **fallback `type` + venue** | xem 2.2.1 |
+| `primary_category` | `categories[0]` | không có → `""` |
 | `published` | `published.date-parts[0]` | `[Y]`, `[Y,M]` hoặc `[Y,M,D]` → thiếu thì mặc định `1` |
 | `updated` | `indexed.date-time` | fallback `deposited.date-time`; không có → bằng `published` |
 | `abs_url` | `URL` | |
 | `pdf_url` | `link[]` có `content-type == "application/pdf"` → `.URL` | không có → `""` |
 | `comment` | *(Crossref không có)* | luôn `""`; giữ field cho tương thích schema |
+
+### 2.2.1 🔧 `categories`: Crossref đã ngừng cấp `subject` — phải dùng proxy
+
+Đo trên chính bộ dữ liệu của nhóm (24 record fetch ngày 2026-08-06):
+
+| Trường | Độ phủ |
+|---|---|
+| `subject` | **0 / 24** |
+| `type` | 24 / 24 |
+| `publisher` | 24 / 24 |
+| `container-title` | 16 / 24 |
+
+Để `categories` rỗng thì câu hỏi loại `categories` trong test set sẽ có
+`ground_truth` rỗng và không chấm điểm được — mất hẳn 1 trong 4 loại câu hỏi.
+
+**Quy tắc chốt:** ưu tiên `subject[]`; nếu rỗng thì dùng
+`[type, container-title]`, thiếu `container-title` thì lùi về
+`[type, publisher]`. Mỗi record vì vậy luôn có ≥ 2 giá trị có nghĩa, ví dụ
+`journal-article; Buildings` hoặc `posted-content; MDPI AG`.
+
+Kết quả sau khi áp dụng: **24/24 record có categories.**
 
 ### 2.3 🔧 Quy tắc `paper_id` ổn định — **quyết định: dùng DOI**
 
@@ -438,3 +459,5 @@ module kế tiếp không? có artifact hoặc lệnh xác minh đi kèm không?
 | Ngày | Ai | Thay đổi | Lý do |
 |---|---|---|---|
 | 2026-08-06 | VT1 | Bản đầu tiên, chốt tại CP0 | — |
+| 2026-08-06 | VT1 | §2.2.1 — `categories` đổi nguồn sang `type` + venue | Crossref trả `subject` rỗng 0/24, để nguyên thì mất loại câu hỏi `categories` |
+| 2026-08-06 | VT1 | §2.4 — bỏ thêm nhãn `Summary`/`Graphical Abstract` đầu abstract | Nhãn JATS lọt vào `ground_truth` của câu hỏi loại `summary` |
