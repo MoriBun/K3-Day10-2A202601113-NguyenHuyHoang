@@ -1,0 +1,67 @@
+{
+  "report_name": "repaired",
+  "generated_at": "2026-08-06T05:10:57.087582+00:00",
+  "total_rows": 24,
+  "checks_total": 7,
+  "checks_passed": 7,
+  "checks_failed": 0,
+  "success": true,
+  "checks": [
+    {
+      "name": "row_count_min",
+      "success": true,
+      "expected": ">= 20 dong",
+      "observed": "24 dong",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "paper_id_not_null",
+      "success": true,
+      "expected": "`paper_id` khong null/rong",
+      "observed": "0 dong null hoac rong",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "paper_id_unique",
+      "success": true,
+      "expected": "moi `paper_id` chi xuat hien 1 lan",
+      "observed": "0 dong trung",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "title_not_null",
+      "success": true,
+      "expected": "`title` khong null/rong",
+      "observed": "0 dong null hoac rong",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "summary_min_length",
+      "success": true,
+      "expected": "summary >= 100 ky tu",
+      "observed": "0 dong ngan hon nguong (min=826)",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "no_duplicate_rows",
+      "success": true,
+      "expected": "khong co dong trung hoan toan",
+      "observed": "0 dong trung",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    },
+    {
+      "name": "freshness_age",
+      "success": true,
+      "expected": "age_days <= 180",
+      "observed": "0 dong qua han (max=175)",
+      "failed_rows": 0,
+      "sample_failed_paper_ids": []
+    }
+  ]
+}
