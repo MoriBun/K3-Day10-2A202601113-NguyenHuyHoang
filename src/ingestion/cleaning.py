@@ -5,6 +5,7 @@ import math
 import re
 from dataclasses import asdict
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pandas as pd
 
@@ -25,8 +26,18 @@ _LIST_COLUMNS = ["authors", "categories"]
 
 def save_clean_dataframe(df: pd.DataFrame, settings: Settings) -> None:
     """Ghi cleaned dataframe ra `settings.paths.clean_csv` va `settings.paths.clean_json`."""
-    csv_path = settings.paths.clean_csv
-    json_path = settings.paths.clean_json
+    write_clean_artifacts(df, settings.paths.clean_csv, settings.paths.clean_json)
+
+
+def write_clean_artifacts(df: pd.DataFrame, csv_path, json_path) -> None:
+    """Ghi cleaned dataframe ra cap path bat ky.
+
+    Corruption flow can ghi ra `papers_clean_corrupted.*` va `papers_clean_repaired.*`
+    chu khong phai path baseline, nen phai co ban nhan path tuong minh -- neu dung
+    `save_clean_dataframe` cho ca ba trang thai thi corrupted se de len baseline.
+    """
+    csv_path = Path(csv_path)
+    json_path = Path(json_path)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     json_path.parent.mkdir(parents=True, exist_ok=True)
 
