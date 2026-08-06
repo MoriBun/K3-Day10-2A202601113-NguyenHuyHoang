@@ -235,7 +235,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-      "reasoning": "The model answer matches the reference answer exactly, providing the same categories without any discrepancies."
+      "reasoning": "The model answer matches the reference answer exactly, providing the same categories for the paper."
     },
     "judge_mode": "llm"
   },
@@ -385,7 +385,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-      "reasoning": "The model answer is identical to the reference answer, accurately capturing the essence of the paper's focus on the demand for efficient and accurate Clinical Decision Support Systems (CDSS) due to the increasing volume of medical data."
+      "reasoning": "The model answer is identical to the reference answer, accurately capturing the essence of the paper's focus on the demand for efficient Clinical Decision Support Systems due to increasing medical data."
     },
     "judge_mode": "llm"
   },

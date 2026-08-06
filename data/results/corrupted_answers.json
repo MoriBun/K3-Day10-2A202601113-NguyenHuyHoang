@@ -25,7 +25,7 @@
     "judge": {
       "score": 2,
       "correct": false,
-      "reasoning": "The model answer focuses on scientific literature review generation rather than the specific application of large language models for accident analysis and safety report generation in high-risk industrial settings, which is the main focus of the reference answer."
+      "reasoning": "The model answer focuses on scientific literature review generation rather than the specific application of LLMs for accident analysis and safety report generation in high-risk industrial settings, which is the main focus of the reference answer."
     },
     "judge_mode": "llm"
   },
@@ -55,7 +55,7 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "The model answer lists authors who are not mentioned in the reference answer, indicating a complete mismatch."
+      "reasoning": "The model answer lists different authors than the reference answer, indicating it is incorrect."
     },
     "judge_mode": "llm"
   },
@@ -85,7 +85,7 @@
     "judge": {
       "score": 2,
       "correct": false,
-      "reasoning": "The model answer is incorrect as it provides a different publication date (2026-04-06) compared to the reference answer (2026-08-01). The model answer is close but not materially correct."
+      "reasoning": "The model answer provides a date that is incorrect, as it does not match the reference answer. The model answer is earlier than the reference date, indicating a misunderstanding of the publication date."
     },
     "judge_mode": "llm"
   },
@@ -115,7 +115,7 @@
     "judge": {
       "score": 2,
       "correct": false,
-      "reasoning": "The model answer identifies 'posted-content' and 'MDPI AG' as categories, which do not align with the reference answer's categories of 'journal-article' and 'SPE Journal'. The model answer is partially relevant but does not accurately reflect the categories specified in the reference."
+      "reasoning": "The model answer identifies 'posted-content' and 'MDPI AG' as categories, which do not align with the reference answer's categories of 'journal-article' and 'SPE Journal'. The reference answer specifies a particular journal, while the model answer refers to a publisher, indicating a misunderstanding of the question."
     },
     "judge_mode": "llm"
   },
@@ -475,7 +475,7 @@
     "judge": {
       "score": 2,
       "correct": false,
-      "reasoning": "The model answer provides a different category ('journal-article; Scholarly Review Journal') compared to the reference answer ('posted-content; MDPI AG'). While both answers indicate that the paper is a type of publication, they do not match, leading to a low score."
+      "reasoning": "The model answer identifies the category as 'journal-article' and 'Scholarly Review Journal', which is not aligned with the reference answer that specifies 'posted-content' and 'MDPI AG'. The categories are different, indicating a misunderstanding of the specific classification."
     },
     "judge_mode": "llm"
   }
