@@ -7,29 +7,43 @@ import pandas as pd
 from core.utils import first_sentence, write_json
 
 
+_EVALUATION_PAPER_COUNT = 4
+_MINIMUM_SUMMARY_CHARS = 100
+_QUESTION_TEMPLATES = (
+    ("summary", "What is the paper '{title}' about?", "summary"),
+    ("authors", "Who authored the paper '{title}'?", "authors_joined"),
+    ("date", "When was the paper '{title}' published?", "published"),
+    ("categories", "What categories does the paper '{title}' belong to?", "categories_joined"),
+)
+
+
 def build_test_set(df: pd.DataFrame, output_path) -> list[dict[str, Any]]:
-    """Build deterministic factual questions whose answers are in the clean corpus."""
+    """Build the fixed 16-question factual evaluation set from clean papers."""
     required = {"paper_id", "title", "summary", "authors_joined", "published", "categories_joined"}
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"Cannot build test set; dataframe missing columns: {sorted(missing)}")
     unique = df.drop_duplicates(subset="paper_id", keep="first").reset_index(drop=True)
-    if len(unique) < 4:
-        raise ValueError("At least four clean papers are required to build the evaluation set.")
+    eligible = unique[
+        unique["paper_id"].fillna("").astype(str).str.strip().ne("")
+        & unique["title"].fillna("").astype(str).str.strip().ne("")
+        & unique["authors_joined"].fillna("").astype(str).str.strip().ne("")
+        & unique["summary"].fillna("").astype(str).str.len().ge(_MINIMUM_SUMMARY_CHARS)
+    ].reset_index(drop=True)
+    if len(eligible) < _EVALUATION_PAPER_COUNT:
+        raise ValueError(
+            "At least four clean papers with a non-empty title, authors, and 100-character summary are required."
+        )
 
-    sample_size = min(8, len(unique))
-    positions = sorted({round(index * (len(unique) - 1) / (sample_size - 1)) for index in range(sample_size)})
-    selected = unique.iloc[positions]
+    positions = [
+        round(index * (len(eligible) - 1) / (_EVALUATION_PAPER_COUNT - 1))
+        for index in range(_EVALUATION_PAPER_COUNT)
+    ]
+    selected = eligible.iloc[positions]
     test_set: list[dict[str, Any]] = []
-    question_templates = (
-        ("summary", "What is the main contribution described in '{title}'?", "summary"),
-        ("authors", "Who authored '{title}'?", "authors_joined"),
-        ("publication_date", "When was '{title}' published?", "published"),
-        ("categories", "What categories are assigned to '{title}'?", "categories_joined"),
-    )
     for row_index, (_, row) in enumerate(selected.iterrows(), start=1):
         values = row.to_dict()
-        for question_type, template, answer_column in question_templates:
+        for question_type, template, answer_column in _QUESTION_TEMPLATES:
             test_set.append(
                 {
                     "id": f"eval-{row_index:02d}-{question_type}",

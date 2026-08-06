@@ -45,7 +45,7 @@ def _token_f1(reference: str, prediction: str) -> float:
     return 2 * precision * recall / (precision + recall)
 
 
-def _judge_answer(settings: Settings, question: str, reference: str, prediction: str) -> JudgeVerdict:
+def _judge_answer(settings: Settings, question: str, reference: str, prediction: str) -> tuple[JudgeVerdict, str]:
     prompt = f"""
 Evaluate the model answer against the reference answer.
 
@@ -60,13 +60,16 @@ Return:
 """.strip()
     try:
         llm = build_llm(settings=settings, temperature=0.0).with_structured_output(JudgeVerdict)
-        return llm.invoke(prompt)
+        return llm.invoke(prompt), "llm"
     except Exception:
         score = 5 if _token_f1(reference, prediction) >= 0.95 else 3 if _token_f1(reference, prediction) >= 0.5 else 1
-        return JudgeVerdict(
-            score=score,
-            correct=score >= 3,
-            reasoning="Fallback heuristic judge used because the LLM evaluator was unavailable.",
+        return (
+            JudgeVerdict(
+                score=score,
+                correct=score >= 3,
+                reasoning="Fallback heuristic judge used because the LLM evaluator was unavailable.",
+            ),
+            "fallback_heuristic",
         )
 
 
@@ -112,7 +115,7 @@ def evaluate_pipeline(
 
     for item in test_set:
         result = answer_question(item["question"], settings=settings, index=index)
-        judge = _judge_answer(settings, item["question"], item["ground_truth"], result.answer)
+        judge, judge_mode = _judge_answer(settings, item["question"], item["ground_truth"], result.answer)
         retrieval_hit = any(doc_id in item["ground_truth_doc_ids"] for doc_id in result.retrieved_doc_ids)
         answers.append(
             {
@@ -127,15 +130,20 @@ def evaluate_pipeline(
                 "retrieval_hit": retrieval_hit,
                 "token_f1": _token_f1(item["ground_truth"], result.answer),
                 "judge": judge.model_dump(),
+                "judge_mode": judge_mode,
             }
         )
 
+    fallback_count = sum(item["judge_mode"] == "fallback_heuristic" for item in answers)
+    judge_mode = "llm" if fallback_count == 0 else "fallback_heuristic" if fallback_count == len(answers) else "mixed"
     summary = {
         "samples": len(answers),
         "retrieval_hit_rate": mean(1.0 if item["retrieval_hit"] else 0.0 for item in answers),
         "mean_token_f1": mean(item["token_f1"] for item in answers),
         "judge_accuracy": mean(1.0 if item["judge"]["correct"] else 0.0 for item in answers),
         "mean_judge_score": mean(item["judge"]["score"] for item in answers),
+        "judge_mode": judge_mode,
+        "judge_fallback_count": fallback_count,
     }
     summary["ragas"] = _run_ragas(settings, answers)
 

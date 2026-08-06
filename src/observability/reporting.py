@@ -21,6 +21,15 @@ def _check_lines(quality: dict[str, Any]) -> list[str]:
         if isinstance(check, dict)
     ]
 
+
+def _judge_status(metrics: dict[str, Any]) -> str:
+    mode = metrics.get("judge_mode", "unknown")
+    fallback_count = metrics.get("judge_fallback_count", "n/a")
+    if mode == "llm":
+        return "LLM judge used for every sample."
+    return f"{mode}; heuristic fallback used for {fallback_count} sample(s)."
+
+
 def generate_phase1_report(
     report_path,
     source_summary: dict[str, Any],
@@ -48,7 +57,16 @@ def generate_phase1_report(
     )
     for name in ("samples", "retrieval_hit_rate", "mean_token_f1", "judge_accuracy", "mean_judge_score"):
         lines.append(f"| {name} | {_metric(metrics.get(name))} |")
-    lines.extend(["", f"Ragas: `{metrics.get('ragas', {})}`", "", "## Data quality", ""])
+    lines.extend(
+        [
+            "",
+            f"- Judge evaluator: {_judge_status(metrics)}",
+            f"- Ragas: `{metrics.get('ragas', {})}`",
+            "",
+            "## Data quality",
+            "",
+        ]
+    )
     lines.append(f"Overall status: **{'PASS' if quality.get('passed') else 'FAIL'}**")
     lines.extend(_check_lines(quality))
     lines.extend(
@@ -98,6 +116,12 @@ def generate_corruption_report(
         )
     lines.extend(
         [
+            "",
+            "## Evaluation provenance",
+            "",
+            f"- Baseline judge: {_judge_status(baseline_metrics)}",
+            f"- Corrupted judge: {_judge_status(corrupted_metrics)}",
+            f"- Repaired judge: {_judge_status(repaired_metrics)}",
             "",
             "## Data quality comparison",
             "",
