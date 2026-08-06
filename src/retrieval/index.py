@@ -135,11 +135,14 @@ class LocalEmbeddingIndex:
     @classmethod
     def load(cls, settings: Settings, embeddings_path: Path | None = None) -> "LocalEmbeddingIndex":
         payload = read_json(embeddings_path or settings.paths.embeddings_json)
+        # `persist_path` trong manifest la duong dan TUYET DOI cua may da build.
+        # Manifest duoc commit len git nen tren may khac no se tro sai kho vector
+        # (hoac khong ton tai). Luon dung chroma_dir cua may hien tai.
         return cls(
             settings=settings,
             collection_name=payload["collection_name"],
             documents=payload["documents"],
-            persist_path=Path(payload["persist_path"]),
+            persist_path=settings.paths.chroma_dir,
         )
 
     def search(self, query: str, top_k: int | None = None) -> list[SearchResult]:
