@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import json
-import string
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
+
+from ingestion.cleaning import build_text_for_embedding_from_row
 
 # Ty le (fraction) so dong bi anh huong boi tung loai corruption.
 # Chinh lai cac hang so nay neu ban muon corruption manh/nhe hon.
@@ -107,7 +108,7 @@ def _drop_latest_records(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd
 
 
 def _blank_summaries(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.DataFrame, dict]:
-    n = int(len(df) * _BLANK_SUMMARY_FRACTION)
+    n = _affected_count(len(df), _BLANK_SUMMARY_FRACTION)
     if n == 0:
         return df, {"step": "blank_summaries", "affected_paper_ids": [], "count": 0}
 
@@ -124,7 +125,7 @@ def _blank_summaries(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.Dat
 
 
 def _inject_text_noise(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.DataFrame, dict]:
-    n = int(len(df) * _NOISE_FRACTION)
+    n = _affected_count(len(df), _NOISE_FRACTION)
     if n == 0:
         return df, {"step": "inject_text_noise", "affected_paper_ids": [], "count": 0}
 
@@ -151,7 +152,7 @@ def _inject_text_noise(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.D
 
 
 def _truncate_titles(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.DataFrame, dict]:
-    n = int(len(df) * _TRUNCATE_TITLE_FRACTION)
+    n = _affected_count(len(df), _TRUNCATE_TITLE_FRACTION)
     if n == 0:
         return df, {"step": "truncate_titles", "affected_paper_ids": [], "count": 0}
 
@@ -174,7 +175,7 @@ def _truncate_titles(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.Dat
 
 
 def _make_dates_stale(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.DataFrame, dict]:
-    n = int(len(df) * _STALE_DATE_FRACTION)
+    n = _affected_count(len(df), _STALE_DATE_FRACTION)
     if n == 0:
         return df, {"step": "make_dates_stale", "affected_paper_ids": [], "count": 0}
 
@@ -200,7 +201,7 @@ def _make_dates_stale(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.Da
 
 
 def _add_duplicate_rows(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.DataFrame, dict]:
-    n = int(len(df) * _DUPLICATE_FRACTION)
+    n = _affected_count(len(df), _DUPLICATE_FRACTION)
     if n == 0:
         return df, {"step": "add_duplicate_rows", "duplicated_paper_ids": [], "count": 0}
 
@@ -222,15 +223,18 @@ def _add_duplicate_rows(df: pd.DataFrame, rng: np.random.Generator) -> tuple[pd.
 # --------------------------------------------------------------------------
 
 
+def _affected_count(total: int, fraction: float) -> int:
+    """So dong bi tac dong. `int(total * fraction)` tra ve 0 voi corpus nho
+    (vi du fixture 6 dong x 0.10 = 0) khien corruption thanh no-op va khong do
+    duoc impact. Bao dam toi thieu 1 dong khi corpus co tu 2 dong tro len."""
+    if total <= 1:
+        return 0
+    return max(1, int(total * fraction))
+
+
 def _rebuild_embedding_text(row: pd.Series) -> str:
-    title = str(row.get("title") or "")
-    summary = str(row.get("summary") or "")
-    categories_joined = row.get("categories_joined") or ""
-    parts = [title, summary]
-    if categories_joined:
-        parts.append(f"Categories: {categories_joined}")
-    text = " ".join(p for p in parts if p)
-    return " ".join(text.split())
+    # Dung dung cong thuc cua cleaning.py -- xem CONTRACT.md muc 4.1.
+    return build_text_for_embedding_from_row(row)
 
 
 def _write_log(output_log_path, log: dict[str, Any]) -> None:
