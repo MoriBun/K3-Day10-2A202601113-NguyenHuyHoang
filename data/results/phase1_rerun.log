@@ -1,0 +1,4 @@
+[cleaning] raw=24 -> clean=24 (duplicate=0, no_title=0, short_summary=0, bad_published=0)
+  [PASS] 7/7 check -> quality_baseline.json
+  [FRESH] 0/24 stale rows
+Baseline pipeline complete: 24 clean papers, 1.000 retrieval hit rate.

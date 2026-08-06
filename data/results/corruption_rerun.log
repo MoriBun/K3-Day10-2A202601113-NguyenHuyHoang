@@ -1,0 +1,6 @@
+  [FAIL] 3/7 check -> quality_corrupted.json
+  [STALE] 3/24 stale rows
+[cleaning] raw=24 -> clean=24 (duplicate=0, no_title=0, short_summary=0, bad_published=0)
+  [PASS] 7/7 check -> quality_repaired.json
+  [FRESH] 0/24 stale rows
+Corruption flow complete: hit rate baseline=1.000, corrupted=0.933, repaired=1.000.
