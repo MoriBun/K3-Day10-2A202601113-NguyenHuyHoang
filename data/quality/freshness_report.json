@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-08-06T04:41:52.697798+00:00",
+  "threshold_days": 180,
+  "total_rows": 24,
+  "stale_rows": 0,
+  "fresh_rows": 24,
+  "is_fresh": true,
+  "latest_published": "2026-08-01",
+  "oldest_published": "2026-02-12",
+  "min_age_days": 5,
+  "max_age_days": 175,
+  "mean_age_days": 81,
+  "stale_paper_ids": []
+}
