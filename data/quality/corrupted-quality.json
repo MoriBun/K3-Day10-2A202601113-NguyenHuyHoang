@@ -1,0 +1,50 @@
+{
+  "report_name": "corrupted_quality",
+  "generated_at": "2026-08-06T04:49:40.648757+00:00",
+  "row_count": 24,
+  "passed": false,
+  "checks": {
+    "row_count_min": {
+      "passed": true,
+      "observed": 24,
+      "expectation": "at least 20 rows"
+    },
+    "paper_id_not_null": {
+      "passed": true,
+      "observed": 24,
+      "expectation": "every row has a paper_id"
+    },
+    "paper_id_unique": {
+      "passed": false,
+      "observed": 2,
+      "expectation": "zero rows with a duplicate paper_id"
+    },
+    "title_not_null": {
+      "passed": true,
+      "observed": 24,
+      "expectation": "every row has a title"
+    },
+    "summary_min_length": {
+      "passed": false,
+      "observed": {
+        "valid_rows": 22,
+        "minimum_chars": 100
+      },
+      "expectation": "every summary contains at least 100 characters"
+    },
+    "no_duplicate_rows": {
+      "passed": false,
+      "observed": 2,
+      "expectation": "zero rows duplicated across every column"
+    },
+    "freshness_age": {
+      "passed": false,
+      "observed": {
+        "stale_rows": 3,
+        "invalid_age_rows": 0,
+        "threshold_days": 180
+      },
+      "expectation": "every age_days value is between zero and the freshness threshold"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "report_name": "repaired_quality",
+  "generated_at": "2026-08-06T04:49:59.619308+00:00",
+  "row_count": 24,
+  "passed": true,
+  "checks": {
+    "row_count_min": {
+      "passed": true,
+      "observed": 24,
+      "expectation": "at least 20 rows"
+    },
+    "paper_id_not_null": {
+      "passed": true,
+      "observed": 24,
+      "expectation": "every row has a paper_id"
+    },
+    "paper_id_unique": {
+      "passed": true,
+      "observed": 0,
+      "expectation": "zero rows with a duplicate paper_id"
+    },
+    "title_not_null": {
+      "passed": true,
+      "observed": 24,
+      "expectation": "every row has a title"
+    },
+    "summary_min_length": {
+      "passed": true,
+      "observed": {
+        "valid_rows": 24,
+        "minimum_chars": 100
+      },
+      "expectation": "every summary contains at least 100 characters"
+    },
+    "no_duplicate_rows": {
+      "passed": true,
+      "observed": 0,
+      "expectation": "zero rows duplicated across every column"
+    },
+    "freshness_age": {
+      "passed": true,
+      "observed": {
+        "stale_rows": 0,
+        "invalid_age_rows": 0,
+        "threshold_days": 180
+      },
+      "expectation": "every age_days value is between zero and the freshness threshold"
+    }
+  }
+}

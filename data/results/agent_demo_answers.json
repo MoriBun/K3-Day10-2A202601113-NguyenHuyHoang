@@ -1,0 +1,14 @@
+[
+  {
+    "question": "What is the paper 'SafeRAG: A Large-Language-Model-Based Multistage Retrieval-Augmented Framework for Oil and Gas Safety Report Generation' about?",
+    "answer": "In high-risk industrial settings, leveraging large language models (LLMs) for automated accident analysis and generating safety reports has emerged as an efficient workflow."
+  },
+  {
+    "question": "Who authored the paper 'SafeRAG: A Large-Language-Model-Based Multistage Retrieval-Augmented Framework for Oil and Gas Safety Report Generation'?",
+    "answer": "Qianwen Cao; Chiyu Zhang; Junxiong Ning; Gongru Li"
+  },
+  {
+    "question": "When was the paper 'SafeRAG: A Large-Language-Model-Based Multistage Retrieval-Augmented Framework for Oil and Gas Safety Report Generation' published?",
+    "answer": "2026-08-01"
+  }
+]

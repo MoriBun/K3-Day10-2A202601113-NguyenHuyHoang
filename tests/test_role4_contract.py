@@ -14,12 +14,39 @@ from observability.quality import build_freshness_report, run_data_quality_check
 
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXTURE_PATH = ROOT / "fixtures" / "papers_clean_sample.json"
+
+
+def _sample_dataframe() -> pd.DataFrame:
+    dates = ["2026-07-22", "2026-06-30", "2026-05-14", "2026-04-02", "2026-03-11", "2026-02-19"]
+    rows = []
+    for index, published in enumerate(dates, start=1):
+        summary = (
+            f"Sample scholarly summary {index} explains a reproducible retrieval evaluation scenario "
+            "with enough detail to satisfy the minimum summary-length quality requirement."
+        )
+        rows.append(
+            {
+                "paper_id": f"10.5555/test.{index:04d}",
+                "title": f"Test Paper {index}",
+                "summary": summary,
+                "authors_joined": f"Author {index}; Collaborator {index}",
+                "categories_joined": "Testing; Evaluation",
+                "primary_category": "Testing",
+                "published": published,
+                "updated": published,
+                "abs_url": f"https://doi.org/10.5555/test.{index:04d}",
+                "pdf_url": "",
+                "text_for_embedding": summary,
+                "age_days": (index * 20) - 5,
+                "summary_chars": len(summary),
+            }
+        )
+    return pd.DataFrame(rows)
 
 
 class Role4ContractTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.df = pd.read_json(FIXTURE_PATH)
+        self.df = _sample_dataframe()
         self.temp_dir = tempfile.TemporaryDirectory()
         self.output_dir = Path(self.temp_dir.name)
 
